@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calculadora de Rescisão CLT 2026</title>
+    <style>
+        /* ================================
+           RESET E VARIÁVEIS CSS
+           ================================ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            /* Modo claro */
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --primary: #1d4ed8;
+            --primary-soft: #dbeafe;
+            --primary-dark: #1e40af;
+            --success: #059669;
+            --success-soft: #d1fae5;
+            --danger: #dc2626;
+            --danger-soft: #fee2e2;
+            --warning: #f59e0b;
+            --warning-soft: #fef3c7;
+            --text-color: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="dark"] {
+            /* Modo escuro */
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #3b82f6;
+            --primary-soft: #1e3a8a;
+            --primary-dark: #2563eb;
+            --success: #10b981;
+            --success-soft: #064e3b;
+            --danger: #ef4444;
+            --danger-soft: #7f1d1d;
+            --warning: #fbbf24;
+            --warning-soft: #78350f;
+            --text-color: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 1.5rem;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* ================================
+           CONTAINER E LAYOUT
+           ================================ */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ================================
+           CABEÇALHO
+           ================================ */
+        header {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 2px solid var(--border-color);
+            transition: transform 0.2s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .title-group h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .title-group p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .theme-toggle input {
+            display: none;
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 26px;
+            background: var(--border-color);
+            border-radius: 999px;
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .toggle-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--card-bg);
+            border-radius: 999px;
+            transform: translateX(0);
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-toggle input:checked + .toggle-switch {
+            background: var(--primary);
+        }
+
+        .theme-toggle input:checked + .toggle-switch .toggle-thumb {
+            transform: translateX(24px);
+        }
+
+        /* ================================
+           GRID PRINCIPAL
+           ================================ */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ================================
+           CARDS
+           ================================ */
+        .card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-icon {
+            font-size: 1.25rem;
+        }
+
+        /* ================================
+           FORMULÁRIOS
+           ================================ */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        label .required {
+            color: var(--danger);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            background: var(--bg-color);
+            color: var(--text-color);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-soft);
+        }
+
+        input.error {
+            border-color: var(--danger);
+        }
+
+        .error-message {
+            font-size: 0.75rem;
+            color: var(--danger);
+            min-height: 1rem;
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* ================================
+           RADIO BUTTONS
+           ================================ */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--bg-color);
+            transition: all 0.2s ease;
+        }
+
+        .radio-item:hover {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+        .radio-item input[type="radio"] {
+            width: auto;
+        }
+
+        .radio-item.selected {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+        /* ================================
+           BOTÕES
+           ================================ */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(29, 78, 216, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* ================================
+           RESULTADOS
+           ================================ */
+        .result-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .result-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-summary {
+            background: linear-gradient(135deg, var(--primary-soft), var(--card-bg));
+            border: 2px solid var(--primary);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-summary h3 {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .result-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            background: var(--success-soft);
+            color: var(--success);
+        }
+
+        /* ================================
+           TABELAS
+           ================================ */
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .result-table th,
+        .result-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .result-table th {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .result-table td {
+            font-size: 0.875rem;
+            color: var(--text-color);
+        }
+
+        .result-table .value {
+            text-align: right;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .result-table .positive {
+            color: var(--success);
+        }
+
+        .result-table .negative {
+            color: var(--danger);
+        }
+
+        .result-table .info {
+            color: var(--primary);
+        }
+
+        .result-table .total-row {
+            background: var(--primary-soft);
+            font-weight: 700;
+            border-top: 2px solid var(--primary);
+        }
+
+        .result-table .subtitle {
+            background: var(--bg-color);
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        /* ================================
+           ALERTAS
+           ================================ */
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .alert-icon {
+            font-size: 1.25rem;
+        }
+
+        .alert-info {
+            background: var(--primary-soft);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .alert-warning {
+            background: var(--warning-soft);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .alert-success {
+            background: var(--success-soft);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        /* ================================
+           RODAPÉ
+           ================================ */
+        footer {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .legal-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .legal-text ul {
+            text-align: left;
+            margin-top: 0.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .legal-text li {
+            margin-bottom: 0.25rem;
+        }
+
+        .signature {
+            font-size: 0.875rem;
+            color: var(--text-color);
+            font-weight: 600;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .heart {
+            color: #ef4444;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* ================================
+           DIVIDER
+           ================================ */
+        .divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="container">
+        <!-- ================================
+             CABEÇALHO
+             ================================ -->
+        <header>
+            <div class="header-left">
+                <img src="https://raw.githubusercontent.com/Halexandre1/PDF_PRO/main/HERBERT.jpg" alt="Logo" class="logo">
+                <div class="title-group">
+                    <h1>Calculadora de Rescisão CLT 2026</h1>
+                    <p>Simulador educacional de cálculo rescisório trabalhista</p>
+                </div>
+            </div>
+            <label class="theme-toggle">
+                <span>🌞</span>
+                <input type="checkbox" id="themeToggle">
+                <div class="toggle-switch">
+                    <div class="toggle-thumb"></div>
+                </div>
+                <span>🌙</span>
+            </label>
+        </header>
+
+        <div class="main-grid">
+            <!-- ================================
+                 COLUNA ESQUERDA: FORMULÁRIO
+                 ================================ -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">📋</span>
+                        Dados do Trabalhador
+                    </h2>
+                </div>
+
+                <form id="rescisaoForm">
+                    <div class="form-grid">
+                        <!-- Salário Bruto -->
+                        <div class="form-group">
+                            <label for="salarioBruto">Salário Bruto Mensal <span class="required">*</span></label>
+                            <input type="text" id="salarioBruto" placeholder="R$ 0,00" required>
+                            <span class="error-message" id="erroSalario"></span>
+                        </div>
+
+                        <!-- Dependentes -->
+                        <div class="form-group">
+                            <label for="dependentes">Nº de Dependentes (IR)</label>
+                            <input type="number" id="dependentes" min="0" value="0">
+                        </div>
+
+                        <!-- Data Admissão -->
+                        <div class="form-group">
+                            <label for="dataAdmissao">Data de Admissão <span class="required">*</span></label>
+                            <input type="date" id="dataAdmissao" required>
+                            <span class="error-message" id="erroAdmissao"></span>
+                        </div>
+
+                        <!-- Data Desligamento -->
+                        <div class="form-group">
+                            <label for="dataDesligamento">Data de Desligamento <span class="required">*</span></label>
+                            <input type="date" id="dataDesligamento" required>
+                            <span class="error-message" id="erroDesligamento"></span>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Tipo de Rescisão -->
+                    <div class="form-group full-width">
+                        <label>Tipo de Rescisão <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="tipoRescisao" value="demissao_sem_justa" checked>
+                                <div>
+                                    <strong>Demissão sem justa causa</strong>
+                                    <p class="hint">Iniciativa do empregador, direito a todas verbas + multa FGTS 40%</p>
+                                </div>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tipoRescisao" value="pedido_demissao">
+                                <div>
+                                    <strong>Pedido de demissão</strong>
+                                    <p class="hint">Iniciativa do empregado, sem multa FGTS nem saque</p>
+                                </div>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tipoRescisao" value="acordo">
+                                <div>
+                                    <strong>Rescisão por acordo (Art. 484-A)</strong>
+                                    <p class="hint">Acordo entre partes, multa FGTS 20% e saque de 80%</p>
+                                </div>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tipoRescisao" value="justa_causa">
+                                <div>
+                                    <strong>Demissão com justa causa</strong>
+                                    <p class="hint">Falta grave do empregado, direito apenas a saldo e férias vencidas</p>
+                                </div>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tipoRescisao" value="termino_experiencia">
+                                <div>
+                                    <strong>Término de contrato de experiência</strong>
+                                    <p class="hint">Fim natural do contrato por prazo determinado</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Aviso Prévio -->
+                    <div class="form-group full-width">
+                        <label>Aviso Prévio</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="avisoPrevio" value="trabalhado" checked>
+                                <strong>Trabalhado</strong>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="avisoPrevio" value="indenizado">
+                                <strong>Indenizado</strong>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="avisoPrevio" value="nao_aplicavel">
+                                <strong>Não aplicável</strong>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Férias -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="feriasVencidas">Tem férias vencidas?</label>
+                            <select id="feriasVencidas">
+                                <option value="nao">Não</option>
+                                <option value="sim">Sim (1 período)</option>
+                                <option value="duplo">Sim (2 períodos)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Adicionais -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="horaExtra">Horas Extras (R$)</label>
+                            <input type="text" id="horaExtra" placeholder="R$ 0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="adicionalNoturno">Adicional Noturno (R$)</label>
+                            <input type="text" id="adicionalNoturno" placeholder="R$ 0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="comissoes">Comissões (R$)</label>
+                            <input type="text" id="comissoes" placeholder="R$ 0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="outrosDescontos">Outros Descontos (R$)</label>
+                            <input type="text" id="outrosDescontos" placeholder="R$ 0,00">
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn-primary" id="btnCalcular">
+                            🧮 Calcular Rescisão
+                        </button>
+                        <button type="button" class="btn-secondary" id="btnExemplo">
+                            🧪 Exemplo
+                        </button>
+                        <button type="button" class="btn-secondary" id="btnLimpar">
+                            🧹 Limpar
+                        </button>
+                        <button type="button" class="btn-secondary" id="btnImprimir">
+                            🖨️ Imprimir
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ================================
+                 COLUNA DIREITA: RESULTADOS
+                 ================================ -->
+            <div class="card result-section" id="resultSection">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span class="card-icon">💰</span>
+                        Resultado da Rescisão
+                    </h2>
+                </div>
+
+                <!-- Alerta de Tipo de Rescisão -->
+                <div id="alertTipo"></div>
+
+                <!-- Resumo Líquido -->
+                <div class="result-summary">
+                    <h3>Valor Líquido a Receber</h3>
+                    <div class="result-value" id="valorLiquido">R$ 0,00</div>
+                    <span class="result-badge" id="tipoBadge">Demissão sem justa causa</span>
+                </div>
+
+                <!-- Tempo de Serviço -->
+                <div class="alert alert-info">
+                    <span class="alert-icon">⏱️</span>
+                    <div>
+                        <strong>Tempo de serviço:</strong>
+                        <p id="tempoServico">0 anos, 0 meses e 0 dias</p>
+                    </div>
+                </div>
+
+                <!-- Tabela de Verbas -->
+                <h3 class="card-title" style="margin-top: 1.5rem; margin-bottom: 1rem;">
+                    <span class="card-icon">📊</span>
+                    Detalhamento das Verbas
+                </h3>
+
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>Verba</th>
+                            <th class="value">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaVerbas">
+                        <!-- Preenchido pelo JS -->
+                    </tbody>
+                </table>
+
+                <!-- Tabela de Descontos -->
+                <h3 class="card-title" style="margin-top: 1.5rem; margin-bottom: 1rem;">
+                    <span class="card-icon">➖</span>
+                    Descontos
+                </h3>
+
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>Desconto</th>
+                            <th class="value">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaDescontos">
+                        <!-- Preenchido pelo JS -->
+                    </tbody>
+                </table>
+
+                <!-- Tabela de Informativos -->
+                <h3 class="card-title" style="margin-top: 1.5rem; margin-bottom: 1rem;">
+                    <span class="card-icon">ℹ️</span>
+                    Informativos (não descontados)
+                </h3>
+
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th class="value">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaInformativos">
+                        <!-- Preenchido pelo JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ================================
+             RODAPÉ
+             ================================ -->
+        <footer>
+            <div class="legal-text">
+                <strong>⚖️ Observações Legais Importantes:</strong>
+                <ul>
+                    <li><strong>Valores aproximados:</strong> Este simulador fornece estimativas baseadas nas regras da CLT vigentes em 2026.</li>
+                    <li><strong>Uso educacional:</strong> Os cálculos são para fins didáticos e informativos.</li>
+                    <li><strong>Consulte especialistas:</strong> Para decisões oficiais de rescisão, homologação ou processos trabalhistas, consulte um contador, advogado trabalhista ou departamento de RH.</li>
+                    <li><strong>Variações legais:</strong> Acordos coletivos, convenções sindicais e situações específicas podem alterar valores e regras.</li>
+                    <li><strong>Atualização:</strong> A legislação trabalhista pode sofrer alterações. Verifique sempre as normas mais recentes.</li>
+                </ul>
+            </div>
+            <p class="signature">
+                Feito com <span class="heart">❤</span> por HAlexandre © <span id="currentYear"></span>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // ============================================================
+        //  CONSTANTES LEGAIS - CLT 2026
+        // ============================================================
+
+        const CONSTANTES_2026 = {
+            // INSS 2026
+            INSS_FAIXAS: [
+                { limite: 1621.00, aliquota: 0.075 },
+                { limite: 2902.84, aliquota: 0.09 },
+                { limite: 4354.27, aliquota: 0.12 },
+                { limite: 8475.55, aliquota: 0.14 }
+            ],
+            INSS_TETO: 8475.55,
+
+            // IRRF 2026
+            IRRF_TABELA: [
+                { limite: 2112.00, aliquota: 0.0, parcelaDeduzir: 0.0 },
+                { limite: 2826.65, aliquota: 0.075, parcelaDeduzir: 158.40 },
+                { limite: 3751.05, aliquota: 0.15, parcelaDeduzir: 370.40 },
+                { limite: 4664.68, aliquota: 0.225, parcelaDeduzir: 651.73 },
+                { limite: Infinity, aliquota: 0.275, parcelaDeduzir: 884.96 }
+            ],
+            IRRF_DEDUCAO_DEPENDENTE: 189.59,
+            IRRF_LIMITE_ISENCAO: 5000.00,
+            IRRF_LIMITE_REDUCAO: 7350.00,
+
+            // FGTS
+            FGTS_ALIQUOTA: 0.08,
+            FGTS_MULTA_SEM_JUSTA: 0.40,
+            FGTS_MULTA_ACORDO: 0.20,
+
+            // Aviso Prévio
+            AVISO_PREVIO_BASE: 30,
+            AVISO_PREVIO_ADICIONAL_POR_ANO: 3,
+            AVISO_PREVIO_MAXIMO: 90
+        };
+
+        // ============================================================
+        //  UTILITÁRIOS
+        // ============================================================
+
+        const Utils = {
+            formatCurrency(value) {
+                return value.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                    minimumFractionDigits: 2
+                });
+            },
+
+            parseCurrency(str) {
+                if (!str) return 0;
+                const cleaned = str.replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, '');
+                const num = parseFloat(cleaned);
+                return isNaN(num) ? 0 : num;
+            },
+
+            setupMoneyMask(input) {
+                input.addEventListener('input', () => {
+                    const onlyDigits = input.value.replace(/\D/g, '');
+                    if (!onlyDigits) {
+                        input.value = '';
+                        return;
+                    }
+                    const intValue = parseInt(onlyDigits, 10);
+                    input.value = (intValue / 100).toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                });
+            },
+
+            calcularDiferencaDias(dataInicio, dataFim) {
+                const diff = dataFim - dataInicio;
+                return Math.floor(diff / (1000 * 60 * 60 * 24));
+            },
+
+            calcularTempoServico(dataAdmissao, dataDesligamento) {
+                let anos = dataDesligamento.getFullYear() - dataAdmissao.getFullYear();
+                let meses = dataDesligamento.getMonth() - dataAdmissao.getMonth();
+                let dias = dataDesligamento.getDate() - dataAdmissao.getDate();
+
+                if (dias < 0) {
+                    meses--;
+                    const ultimoDiaMesAnterior = new Date(
+                        dataDesligamento.getFullYear(),
+                        dataDesligamento.getMonth(),
+                        0
+                    ).getDate();
+                    dias += ultimoDiaMesAnterior;
+                }
+
+                if (meses < 0) {
+                    anos--;
+                    meses += 12;
+                }
+
+                return { anos, meses, dias };
+            }
+        };
+
+        // ============================================================
+        //  CÁLCULOS DE RESCISÃO
+        // ============================================================
+
+        const Calculos = {
+            /**
+             * Calcula o saldo de salário proporcional aos dias trabalhados no mês
+             */
+            calcularSaldoSalario(salarioBruto, dataDesligamento) {
+                const diasMes = new Date(
+                    dataDesligamento.getFullYear(),
+                    dataDesligamento.getMonth() + 1,
+                    0
+                ).getDate();
+                
+                const diasTrabalhados = dataDesligamento.getDate();
+                return (salarioBruto / diasMes) * diasTrabalhados;
+            },
+
+            /**
+             * Calcula dias de aviso prévio: 30 dias + 3 por ano (max 90)
+             */
+            calcularDiasAvisoPrevio(tempoServico) {
+                const { anos } = tempoServico;
+                const diasBase = CONSTANTES_2026.AVISO_PREVIO_BASE;
+                const diasAdicionais = anos * CONSTANTES_2026.AVISO_PREVIO_ADICIONAL_POR_ANO;
+                const totalDias = diasBase + diasAdicionais;
+                
+                return Math.min(totalDias, CONSTANTES_2026.AVISO_PREVIO_MAXIMO);
+            },
+
+            /**
+             * Calcula valor do aviso prévio
+             */
+            calcularAvisoPrevio(salarioBruto, tempoServico, tipo) {
+                if (tipo === 'nao_aplicavel') return 0;
+                
+                const diasAviso = this.calcularDiasAvisoPrevio(tempoServico);
+                return (salarioBruto / 30) * diasAviso;
+            },
+
+            /**
+             * Calcula férias vencidas + 1/3 constitucional
+             */
+            calcularFeriasVencidas(salarioBruto, qtdPeriodos) {
+                if (qtdPeriodos === 0) return 0;
+                const feriasSimples = salarioBruto * qtdPeriodos;
+                const tercoCon = feriasSimples / 3;
+                return feriasSimples + tercoCon;
+            },
+
+            /**
+             * Calcula férias proporcionais + 1/3
+             */
+            calcularFeriasProporcionais(salarioBruto, mesesTrabalhados) {
+                // A cada mês trabalhado = 1/12 de férias
+                const avisos = mesesTrabalhados / 12;
+                const feriasProp = salarioBruto * avisos;
+                const terco = feriasProp / 3;
+                return feriasProp + terco;
+            },
+
+            /**
+             * Calcula 13º salário proporcional
+             */
+            calcularDecimoTerceiro(salarioBruto, mesesTrabalhados) {
+                // 1/12 por mês trabalhado no ano
+                return (salarioBruto / 12) * mesesTrabalhados;
+            },
+
+            /**
+             * Calcula INSS progressivo
+             */
+            calcularINSS(baseCalculo) {
+                const base = Math.min(baseCalculo, CONSTANTES_2026.INSS_TETO);
+                let inss = 0;
+                let faixaAnterior = 0;
+
+                for (const faixa of CONSTANTES_2026.INSS_FAIXAS) {
+                    if (base > faixa.limite) {
+                        inss += (faixa.limite - faixaAnterior) * faixa.aliquota;
+                        faixaAnterior = faixa.limite;
+                    } else {
+                        inss += (base - faixaAnterior) * faixa.aliquota;
+                        break;
+                    }
+                }
+
+                return inss;
+            },
+
+            /**
+             * Calcula IRRF com isenção até R$ 5.000
+             */
+            calcularIRRF(baseCalculo, dependentes) {
+                const rendaTributavel = baseCalculo;
+
+                // Isenção total até R$ 5.000
+                if (rendaTributavel <= CONSTANTES_2026.IRRF_LIMITE_ISENCAO) {
+                    return 0;
+                }
+
+                const deducaoDependentes = dependentes * CONSTANTES_2026.IRRF_DEDUCAO_DEPENDENTE;
+                const baseFinal = Math.max(0, baseCalculo - deducaoDependentes);
+
+                let impostoBruto = 0;
+                for (const faixa of CONSTANTES_2026.IRRF_TABELA) {
+                    if (baseFinal <= faixa.limite) {
+                        impostoBruto = baseFinal * faixa.aliquota - faixa.parcelaDeduzir;
+                        break;
+                    }
+                }
+
+                impostoBruto = Math.max(0, impostoBruto);
+
+                // Redução gradual entre R$ 5.000 e R$ 7.350
+                if (rendaTributavel <= CONSTANTES_2026.IRRF_LIMITE_REDUCAO) {
+                    const reducao = 978.62 - (0.133145 * rendaTributavel);
+                    impostoBruto = Math.max(0, impostoBruto - reducao);
+                }
+
+                return impostoBruto;
+            },
+
+            /**
+             * Calcula FGTS acumulado durante o contrato
+             */
+            calcularFGTSAcumulado(salarioBruto, mesesTrabalhados) {
+                return salarioBruto * CONSTANTES_2026.FGTS_ALIQUOTA * mesesTrabalhados;
+            },
+
+            /**
+             * Calcula multa do FGTS
+             */
+            calcularMultaFGTS(fgtsAcumulado, tipoRescisao) {
+                if (tipoRescisao === 'demissao_sem_justa') {
+                    return fgtsAcumulado * CONSTANTES_2026.FGTS_MULTA_SEM_JUSTA;
+                } else if (tipoRescisao === 'acordo') {
+                    return fgtsAcumulado * CONSTANTES_2026.FGTS_MULTA_ACORDO;
+                }
+                return 0;
+            }
+        };
+
+        // ============================================================
+        //  REGRAS DE RESCISÃO POR TIPO
+        // ============================================================
+
+        const RegrasRescisao = {
+            /**
+             * Define quais verbas são aplicáveis por tipo de rescisão
+             */
+            getVerbasPorTipo(tipo) {
+                const verbas = {
+                    demissao_sem_justa: {
+                        saldoSalario: true,
+                        avisoPrevio: true,
+                        feriasVencidas: true,
+                        feriasProporcionais: true,
+                        decimoTerceiro: true,
+                        multaFGTS: 0.40,
+                        saqueFGTS: true,
+                        seguroDesemprego: true
+                    },
+                    pedido_demissao: {
+                        saldoSalario: true,
+                        avisoPrevio: false,
+                        feriasVencidas: true,
+                        feriasProporcionais: true,
+                        decimoTerceiro: true,
+                        multaFGTS: 0,
+                        saqueFGTS: false,
+                        seguroDesemprego: false
+                    },
+                    acordo: {
+                        saldoSalario: true,
+                        avisoPrevio: true, // 50% indenizado
+                        feriasVencidas: true,
+                        feriasProporcionais: true,
+                        decimoTerceiro: true,
+                        multaFGTS: 0.20,
+                        saqueFGTS: 0.80, // 80% do saldo
+                        seguroDesemprego: false
+                    },
+                    justa_causa: {
+                        saldoSalario: true,
+                        avisoPrevio: false,
+                        feriasVencidas: true, // apenas vencidas
+                        feriasProporcionais: false,
+                        decimoTerceiro: false,
+                        multaFGTS: 0,
+                        saqueFGTS: false,
+                        seguroDesemprego: false
+                    },
+                    termino_experiencia: {
+                        saldoSalario: true,
+                        avisoPrevio: false,
+                        feriasVencidas: true,
+                        feriasProporcionais: true,
+                        decimoTerceiro: true,
+                        multaFGTS: 0,
+                        saqueFGTS: true,
+                        seguroDesemprego: false
+                    }
+                };
+
+                return verbas[tipo] || verbas.demissao_sem_justa;
+            },
+
+            /**
+             * Retorna mensagem explicativa por tipo
+             */
+            getMensagemTipo(tipo) {
+                const mensagens = {
+                    demissao_sem_justa: {
+                        titulo: 'Demissão sem justa causa',
+                        texto: 'Direito a todas as verbas rescisórias, multa de 40% do FGTS, saque integral do FGTS e seguro-desemprego.',
+                        classe: 'alert-success'
+                    },
+                    pedido_demissao: {
+                        titulo: 'Pedido de demissão',
+                        texto: 'Trabalhador perde direito à multa do FGTS, saque do FGTS e seguro-desemprego. Mantém férias e 13º proporcionais.',
+                        classe: 'alert-warning'
+                    },
+                    acordo: {
+                        titulo: 'Rescisão por acordo (Art. 484-A)',
+                        texto: 'Acordo entre empregado e empregador: 50% do aviso prévio, multa de 20% do FGTS e saque de 80% do saldo. Sem seguro-desemprego.',
+                        classe: 'alert-info'
+                    },
+                    justa_causa: {
+                        titulo: 'Demissão com justa causa',
+                        texto: 'Falta grave do empregado. Direito apenas a saldo de salário e férias vencidas. Sem aviso, 13º, FGTS ou seguro-desemprego.',
+                        classe: 'alert-warning'
+                    },
+                    termino_experiencia: {
+                        titulo: 'Término de contrato de experiência',
+                        texto: 'Fim natural do contrato por prazo determinado. Direito a todas verbas proporcionais, mas sem multa do FGTS.',
+                        classe: 'alert-info'
+                    }
+                };
+
+                return mensagens[tipo] || mensagens.demissao_sem_justa;
+            }
+        };
+
+        // ============================================================
+        //  PROCESSAMENTO PRINCIPAL
+        // ============================================================
+
+        const RescisaoCalculator = {
+            processar() {
+                try {
+                    const dados = this.coletarDados();
+                    if (!dados) return;
+
+                    const resultado = this.calcularRescisao(dados);
+                    this.exibirResultados(resultado, dados);
+                } catch (error) {
+                    console.error('Erro ao processar rescisão:', error);
+                    alert('Ocorreu um erro ao calcular a rescisão. Verifique os dados e tente novamente.');
+                }
+            },
+
+            coletarDados() {
+                // Limpar erros
+                document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+                document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
+
+                const salarioBruto = Utils.parseCurrency(document.getElementById('salarioBruto').value);
+                const dependentes = parseInt(document.getElementById('dependentes').value) || 0;
+                const dataAdmissao = new Date(document.getElementById('dataAdmissao').value);
+                const dataDesligamento = new Date(document.getElementById('dataDesligamento').value);
+                const tipoRescisao = document.querySelector('input[name="tipoRescisao"]:checked').value;
+                const avisoPrevio = document.querySelector('input[name="avisoPrevio"]:checked').value;
+                const feriasVencidas = document.getElementById('feriasVencidas').value;
+                
+                const horaExtra = Utils.parseCurrency(document.getElementById('horaExtra').value);
+                const adicionalNoturno = Utils.parseCurrency(document.getElementById('adicionalNoturno').value);
+                const comissoes = Utils.parseCurrency(document.getElementById('comissoes').value);
+                const outrosDescontos = Utils.parseCurrency(document.getElementById('outrosDescontos').value);
+
+                // Validações
+                let valido = true;
+
+                if (salarioBruto <= 0) {
+                    document.getElementById('erroSalario').textContent = 'Informe um salário válido';
+                    document.getElementById('salarioBruto').classList.add('error');
+                    valido = false;
+                }
+
+                if (isNaN(dataAdmissao.getTime())) {
+                    document.getElementById('erroAdmissao').textContent = 'Data inválida';
+                    document.getElementById('dataAdmissao').classList.add('error');
+                    valido = false;
+                }
+
+                if (isNaN(dataDesligamento.getTime())) {
+                    document.getElementById('erroDesligamento').textContent = 'Data inválida';
+                    document.getElementById('dataDesligamento').classList.add('error');
+                    valido = false;
+                }
+
+                if (dataDesligamento <= dataAdmissao) {
+                    document.getElementById('erroDesligamento').textContent = 'Data de desligamento deve ser após a admissão';
+                    document.getElementById('dataDesligamento').classList.add('error');
+                    valido = false;
+                }
+
+                if (!valido) return null;
+
+                const tempoServico = Utils.calcularTempoServico(dataAdmissao, dataDesligamento);
+                const mesesTotais = tempoServico.anos * 12 + tempoServico.meses;
+                
+                // Meses trabalhados no ano corrente para 13º
+                const anoDesligamento = dataDesligamento.getFullYear();
+                const inicioAno = new Date(anoDesligamento, 0, 1);
+                const dataInicioCalculo = dataAdmissao > inicioAno ? dataAdmissao : inicioAno;
+                const mesesAno = dataDesligamento.getMonth() - dataInicioCalculo.getMonth() + 1;
+
+                return {
+                    salarioBruto,
+                    dependentes,
+                    dataAdmissao,
+                    dataDesligamento,
+                    tipoRescisao,
+                    avisoPrevio,
+                    feriasVencidas: feriasVencidas === 'sim' ? 1 : (feriasVencidas === 'duplo' ? 2 : 0),
+                    horaExtra,
+                    adicionalNoturno,
+                    comissoes,
+                    outrosDescontos,
+                    tempoServico,
+                    mesesTotais,
+                    mesesAno
+                };
+            },
+
+            calcularRescisao(dados) {
+                const {
+                    salarioBruto,
+                    dependentes,
+                    tipoRescisao,
+                    avisoPrevio,
+                    feriasVencidas,
+                    tempoServico,
+                    mesesTotais,
+                    mesesAno,
+                    dataDesligamento,
+                    horaExtra,
+                    adicionalNoturno,
+                    comissoes,
+                    outrosDescontos
+                } = dados;
+
+                const regras = RegrasRescisao.getVerbasPorTipo(tipoRescisao);
+                const verbas = {};
+
+                // 1. Saldo de salário
+                if (regras.saldoSalario) {
+                    verbas.saldoSalario = Calculos.calcularSaldoSalario(salarioBruto, dataDesligamento);
+                }
+
+                // 2. Aviso prévio
+                if (regras.avisoPrevio && avisoPrevio !== 'nao_aplicavel') {
+                    let valorAvisoPrevio = Calculos.calcularAvisoPrevio(salarioBruto, tempoServico, avisoPrevio);
+                    
+                    // No acordo, aviso é 50%
+                    if (tipoRescisao === 'acordo') {
+                        valorAvisoPrevio *= 0.5;
+                    }
+                    
+                    verbas.avisoPrevio = valorAvisoPrevio;
+                }
+
+                // 3. Férias vencidas
+                if (regras.feriasVencidas && feriasVencidas > 0) {
+                    verbas.feriasVencidas = Calculos.calcularFeriasVencidas(salarioBruto, feriasVencidas);
+                }
+
+                // 4. Férias proporcionais
+                if (regras.feriasProporcionais) {
+                    verbas.feriasProporcionais = Calculos.calcularFeriasProporcionais(salarioBruto, mesesTotais % 12);
+                }
+
+                // 5. 13º proporcional
+                if (regras.decimoTerceiro) {
+                    verbas.decimoTerceiro = Calculos.calcularDecimoTerceiro(salarioBruto, mesesAno);
+                }
+
+                // 6. Adicionais
+                verbas.horaExtra = horaExtra;
+                verbas.adicionalNoturno = adicionalNoturno;
+                verbas.comissoes = comissoes;
+
+                // Total de verbas
+                const totalVerbas = Object.values(verbas).reduce((acc, val) => acc + val, 0);
+
+                // 7. INSS (sobre verbas tributáveis)
+                const baseINSS = totalVerbas; // Simplificado
+                const inss = Calculos.calcularINSS(baseINSS);
+
+                // 8. IRRF
+                const baseIRRF = totalVerbas - inss;
+                const irrf = Calculos.calcularIRRF(baseIRRF, dependentes);
+
+                // 9. Total descontos
+                const totalDescontos = inss + irrf + outrosDescontos;
+
+                // 10. Líquido
+                const valorLiquido = totalVerbas - totalDescontos;
+
+                // 11. FGTS (informativos)
+                const fgtsAcumulado = Calculos.calcularFGTSAcumulado(salarioBruto, mesesTotais);
+                const multaFGTS = Calculos.calcularMultaFGTS(fgtsAcumulado, tipoRescisao);
+
+                return {
+                    verbas,
+                    totalVerbas,
+                    descontos: {
+                        inss,
+                        irrf,
+                        outrosDescontos
+                    },
+                    totalDescontos,
+                    valorLiquido,
+                    informativos: {
+                        fgtsAcumulado,
+                        multaFGTS,
+                        totalFGTS: fgtsAcumulado + multaFGTS
+                    }
+                };
+            },
+
+            exibirResultados(resultado, dados) {
+                const { verbas, totalVerbas, descontos, totalDescontos, valorLiquido, informativos } = resultado;
+                const { tipoRescisao, tempoServico } = dados;
+
+                // Mostrar seção de resultados
+                document.getElementById('resultSection').classList.add('active');
+
+                // Alerta de tipo
+                const mensagem = RegrasRescisao.getMensagemTipo(tipoRescisao);
+                document.getElementById('alertTipo').innerHTML = `
+                    <div class="alert ${mensagem.classe}">
+                        <span class="alert-icon">ℹ️</span>
+                        <div>
+                            <strong>${mensagem.titulo}</strong>
+                            <p>${mensagem.texto}</p>
+                        </div>
+                    </div>
+                `;
+
+                // Valor líquido
+                document.getElementById('valorLiquido').textContent = Utils.formatCurrency(valorLiquido);
+                document.getElementById('tipoBadge').textContent = mensagem.titulo;
+
+                // Tempo de serviço
+                document.getElementById('tempoServico').textContent = 
+                    `${tempoServico.anos} ano(s), ${tempoServico.meses} mês(es) e ${tempoServico.dias} dia(s)`;
+
+                // Tabela de verbas
+                let htmlVerbas = '';
+                if (verbas.saldoSalario) {
+                    htmlVerbas += `<tr><td>Saldo de salário</td><td class="value positive">${Utils.formatCurrency(verbas.saldoSalario)}</td></tr>`;
+                }
+                if (verbas.avisoPrevio) {
+                    htmlVerbas += `<tr><td>Aviso prévio indenizado</td><td class="value positive">${Utils.formatCurrency(verbas.avisoPrevio)}</td></tr>`;
+                }
+                if (verbas.feriasVencidas) {
+                    htmlVerbas += `<tr><td>Férias vencidas + 1/3</td><td class="value positive">${Utils.formatCurrency(verbas.feriasVencidas)}</td></tr>`;
+                }
+                if (verbas.feriasProporcionais) {
+                    htmlVerbas += `<tr><td>Férias proporcionais + 1/3</td><td class="value positive">${Utils.formatCurrency(verbas.feriasProporcionais)}</td></tr>`;
+                }
+                if (verbas.decimoTerceiro) {
+                    htmlVerbas += `<tr><td>13º salário proporcional</td><td class="value positive">${Utils.formatCurrency(verbas.decimoTerceiro)}</td></tr>`;
+                }
+                if (verbas.horaExtra > 0) {
+                    htmlVerbas += `<tr><td>Horas extras</td><td class="value positive">${Utils.formatCurrency(verbas.horaExtra)}</td></tr>`;
+                }
+                if (verbas.adicionalNoturno > 0) {
+                    htmlVerbas += `<tr><td>Adicional noturno</td><td class="value positive">${Utils.formatCurrency(verbas.adicionalNoturno)}</td></tr>`;
+                }
+                if (verbas.comissoes > 0) {
+                    htmlVerbas += `<tr><td>Comissões</td><td class="value positive">${Utils.formatCurrency(verbas.comissoes)}</td></tr>`;
+                }
+                htmlVerbas += `<tr class="total-row"><td><strong>Total de verbas</strong></td><td class="value"><strong>${Utils.formatCurrency(totalVerbas)}</strong></td></tr>`;
+                document.getElementById('tabelaVerbas').innerHTML = htmlVerbas;
+
+                // Tabela de descontos
+                let htmlDescontos = '';
+                htmlDescontos += `<tr><td>INSS</td><td class="value negative">- ${Utils.formatCurrency(descontos.inss)}</td></tr>`;
+                htmlDescontos += `<tr><td>IRRF</td><td class="value negative">- ${Utils.formatCurrency(descontos.irrf)}</td></tr>`;
+                if (descontos.outrosDescontos > 0) {
+                    htmlDescontos += `<tr><td>Outros descontos</td><td class="value negative">- ${Utils.formatCurrency(descontos.outrosDescontos)}</td></tr>`;
+                }
+                htmlDescontos += `<tr class="total-row"><td><strong>Total de descontos</strong></td><td class="value"><strong>- ${Utils.formatCurrency(totalDescontos)}</strong></td></tr>`;
+                htmlDescontos += `<tr class="total-row" style="background: var(--success-soft); color: var(--success);"><td><strong>VALOR LÍQUIDO</strong></td><td class="value"><strong>${Utils.formatCurrency(valorLiquido)}</strong></td></tr>`;
+                document.getElementById('tabelaDescontos').innerHTML = htmlDescontos;
+
+                // Tabela de informativos
+                let htmlInfo = '';
+                htmlInfo += `<tr><td>FGTS acumulado (saldo)</td><td class="value info">${Utils.formatCurrency(informativos.fgtsAcumulado)}</td></tr>`;
+                if (informativos.multaFGTS > 0) {
+                    htmlInfo += `<tr><td>Multa FGTS</td><td class="value info">${Utils.formatCurrency(informativos.multaFGTS)}</td></tr>`;
+                    htmlInfo += `<tr class="total-row"><td><strong>Total FGTS + Multa</strong></td><td class="value"><strong>${Utils.formatCurrency(informativos.totalFGTS)}</strong></td></tr>`;
+                } else {
+                    htmlInfo += `<tr><td colspan="2" class="hint">Sem direito a multa FGTS neste tipo de rescisão</td></tr>`;
+                }
+                document.getElementById('tabelaInformativos').innerHTML = htmlInfo;
+
+                // Scroll para resultados
+                setTimeout(() => {
+                    document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        };
+
+        // ============================================================
+        //  INICIALIZAÇÃO E EVENTOS
+        // ============================================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ano no rodapé
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // Máscaras monetárias
+            const moneyInputs = ['salarioBruto', 'horaExtra', 'adicionalNoturno', 'comissoes', 'outrosDescontos'];
+            moneyInputs.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) Utils.setupMoneyMask(input);
+            });
+
+            // Botão calcular
+            document.getElementById('btnCalcular').addEventListener('click', () => {
+                RescisaoCalculator.processar();
+            });
+
+            // Botão exemplo
+            document.getElementById('btnExemplo').addEventListener('click', () => {
+                document.getElementById('salarioBruto').value = '3.500,00';
+                document.getElementById('dependentes').value = '1';
+                document.getElementById('dataAdmissao').value = '2022-03-15';
+                document.getElementById('dataDesligamento').value = '2026-01-17';
+                document.querySelector('input[name="tipoRescisao"][value="demissao_sem_justa"]').checked = true;
+                document.querySelector('input[name="avisoPrevio"][value="indenizado"]').checked = true;
+                document.getElementById('feriasVencidas').value = 'sim';
+                document.getElementById('horaExtra').value = '350,00';
+            });
+
+            // Botão limpar
+            document.getElementById('btnLimpar').addEventListener('click', () => {
+                document.getElementById('rescisaoForm').reset();
+                document.getElementById('resultSection').classList.remove('active');
+                document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+                document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
+            });
+
+            // Botão imprimir
+            document.getElementById('btnImprimir').addEventListener('click', () => {
+                window.print();
+            });
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('change', (e) => {
+                document.body.setAttribute('data-theme', e.target.checked ? 'dark' : 'light');
+            });
+
+            // Destacar radio selecionado
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    const group = radio.name;
+                    document.querySelectorAll(`input[name="${group}"]`).forEach(r => {
+                        r.closest('.radio-item').classList.remove('selected');
+                    });
+                    radio.closest('.radio-item').classList.add('selected');
+                });
+                
+                if (radio.checked) {
+                    radio.closest('.radio-item').classList.add('selected');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
